@@ -2,9 +2,9 @@ import { defineConfig, fontProviders } from "astro/config";
 import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 
-// The domain is still open (see README, "Before launch").
-// Set SITE_URL in the host's build settings, or change the fallback here.
-const site = process.env.SITE_URL ?? "https://rahai.dev";
+// The site's public address. Canonical URLs, the sitemap and link previews use it.
+// Change it here if the domain changes (see GUIDE.md).
+const site = process.env.SITE_URL ?? "https://hakimrahai.dev";
 
 // profile.yaml is read with fs (see src/lib/profile.ts), so Vite does not
 // know about it. Restart the dev server when it changes.

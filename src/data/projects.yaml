@@ -6,8 +6,8 @@
 
 - id: waymark
   title: Waymark
-  tagline: Retail POS and decision support for small stores
-  description: Waymark is a point-of-sale and decision-support startup for small retailers, built solo by Hakim Rahai inside the ENSIA V2V incubator.
+  tagline: A local-first till and decision support for small stores
+  description: Waymark is a local-first point-of-sale and decision-support system for Algerian retailers. It keeps selling without internet and explains every recommendation it makes.
   role: Founder, solo build
   team: 1
   period: 2026 – present
@@ -15,15 +15,15 @@
   statusNote: ENSIA V2V incubator
   featured: true
   order: 1
-  result: Built from interviews with 4 retailers. The offline till has shipped and the Admin app is about 50% done.
-  stack: ["C#", .NET, Avalonia, SQLite, React, TypeScript]
+  result: Built from interviews with 4 retailers. The offline-first till has shipped, and expiry alerts work from the first day, with no sales history.
+  stack: ["C#", .NET, Avalonia, ASP.NET Core, SQLite, React, TypeScript]
   tags: ["C#", .NET / Avalonia, SQLite, React]
   links: { repo: null, demo: on-request }
 
 - id: allocator
   title: Course-to-Room Allocator
   tagline: A feasible university timetable, found by local search
-  description: A timetabling system that assigns ENSIA's courses to rooms with Simulated Annealing, Hill Climbing and Tabu Search, and beats the current assignment on every soft-constraint metric.
+  description: A timetabling system that assigns ENSIA's courses to rooms with constraint satisfaction and local search, and beats the school's current assignment on every soft-constraint metric.
   role: Built all 9 soft constraints and both objective functions
   team: 6
   period: null
@@ -31,7 +31,7 @@
   statusNote: null
   featured: true
   order: 2
-  result: A feasible timetable on ENSIA's real data that beat the current assignment on every soft-constraint metric. Simulated Annealing performed best.
+  result: A feasible timetable on ENSIA's real course data that beat the school's current assignment on every soft-constraint metric. Simulated Annealing performed best.
   stack: [Python, Simulated Annealing, Hill Climbing, Tabu Search, CSP]
   tags: [Python, Simulated Annealing, Tabu Search, CSP]
   links:
@@ -41,17 +41,17 @@
 - id: horizon
   title: Horizon
   tagline: A forecasting and statistical learning pipeline
-  description: Horizon is a solo-built pipeline that takes raw data to validated forecasts (naive, drift, ETS, ARIMA) and statistical learning models (Lasso, splines, GAMs) through one interface.
+  description: Horizon is a solo-built Python pipeline that takes raw data to validated forecasts (naive, drift, ETS, ARIMA) and statistical learning models (Lasso, smoothing splines, GAMs) through one interface.
   role: Solo
   team: 1
-  period: null
+  period: "2026"
   status: repo-coming
   statusNote: null
   featured: true
   order: 3
   result: One interface from raw data to validated forecasts (naive, drift, ETS, ARIMA) and models (Lasso, splines, GAMs).
-  stack: [ETS, ARIMA, Lasso, Splines, GAMs]
-  tags: [Forecasting, ETS, ARIMA, GAMs]
+  stack: [Python, Polars, statsmodels]
+  tags: [Python, Polars, statsmodels, Forecasting]
   links: { repo: null, demo: null }
 
 - id: proffer

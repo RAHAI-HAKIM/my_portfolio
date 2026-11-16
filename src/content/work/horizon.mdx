@@ -22,13 +22,13 @@ Horizon is a solo project. I designed it and wrote all of it.
   caption="One interface covers every stage."
   steps={[
     { title: "Raw data", text: "A series goes in as it comes." },
-    { title: "Forecasting", text: "Naive, drift, ETS and ARIMA." },
-    { title: "Statistical learning", text: "Lasso, splines and GAMs." },
-    { title: "Validation", text: "Each result is checked before it is reported." },
+    { title: "Forecasting", text: "Naive, drift, ETS, and ARIMA with automatic order selection." },
+    { title: "Statistical learning", text: "Lasso, smoothing splines and GAMs." },
+    { title: "Validation", text: "Residual diagnostics, including the Ljung-Box test." },
   ]}
 />
 
-Naive and drift forecasts are the baselines that ETS and ARIMA have to beat.
+Horizon is written in Python with Polars and statsmodels. Naive and drift forecasts are the baselines that ETS and ARIMA have to beat.
 
 ## Results
 
@@ -36,9 +36,14 @@ Naive and drift forecasts are the baselines that ETS and ARIMA have to beat.
 
 ## What I'd do differently
 
-Building Horizon surfaced bugs that bias results without raising any error: double differencing, data leakage and mis-scaled regularization.
+Building Horizon surfaced four bugs that bias results without raising any error, and I fixed each one:
 
-<Pending>What Hakim changed, or would change, because of them.</Pending>
+- Double differencing.
+- Leakage in cross-validation.
+- Mis-scaled regularization.
+- GAM identifiability.
+
+<Pending>What Hakim would do differently because of them.</Pending>
 
 ## Next steps
 

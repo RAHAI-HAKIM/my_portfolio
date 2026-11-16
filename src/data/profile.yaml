@@ -1,5 +1,5 @@
 # One source of truth for everything about Hakim that is not a project.
-# Facts come from the CV (EN, Nov 2026). Never invent numbers or claims.
+# Facts come from the CV (EN, Nov 2026), in public/cv. Never invent numbers or claims.
 # A value of null means "not written yet": the site shows a visible
 # placeholder for it while showPlaceholders is true, and hides it otherwise.
 
@@ -59,7 +59,8 @@ education:
   - school: ENSIA, National School of Artificial Intelligence
     degree: State Engineering Diploma in Artificial Intelligence
     period: 2024–2029
-    note: Currently in Year 3.
+    note: A five-year program, currently in Year 3.
+    coursework: [Statistical Inference, Data Mining, Artificial Intelligence, Decision Analysis, Databases, Software Engineering, Operating Systems]
     grades:
       - { label: Year 1, value: 13.35, grade: C }
       - { label: Year 2, value: 15.14, grade: A }
@@ -67,6 +68,7 @@ education:
     degree: null
     period: "2024"
     note: 18.24/20, top 0.33% nationally. About 2,800 of 860,000 candidates scored 18 or above.
+    coursework: []
     grades: []
 
 # `projects` lists the slugs from projects.yaml that use the skill.
@@ -74,15 +76,15 @@ education:
 skills:
   - group: Programming
     items:
-      - { name: Python, projects: [allocator] }
+      - { name: Python, projects: [allocator, horizon] }
       - { name: Java, projects: [] }
       - { name: "C#", projects: [waymark] }
       - { name: TypeScript, projects: [waymark] }
       - { name: SQL, projects: [] }
   - group: Data and optimization
     items:
-      - { name: Polars, projects: [] }
-      - { name: statsmodels, projects: [] }
+      - { name: Polars, projects: [horizon] }
+      - { name: statsmodels, projects: [horizon] }
       - { name: Google OR-Tools, projects: [] }
       - { name: DuckDB, projects: [] }
       - { name: "Metaheuristics (SA, Tabu, Hill Climbing)", projects: [allocator] }
@@ -104,6 +106,6 @@ skills:
     items:
       - { name: Arabic (native), projects: [] }
       - { name: English (C1), projects: [] }
-      - { name: "French (B2, TCF result pending)", projects: [] }
+      - { name: French (B2), projects: [] }
 
 interests: Football (registered with a regional club, ages 10–16), software engineering, software modeling.

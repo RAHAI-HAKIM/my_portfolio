@@ -27,7 +27,7 @@ Every update is an edit to one data file or one case study, then a push.
 | Name, positioning, status line, about paragraph, leadership, education, skills, links | `src/data/profile.yaml` |
 | A project's title, result line, role, status, tags, links | `src/data/projects.yaml` |
 | The text of a case study | `src/content/work/<id>.mdx` |
-| The CV downloads | Add the PDFs to `public/cv/` (file names are in `public/cv/README.txt`) |
+| The CV downloads | Replace the PDFs in `public/cv/`, keeping the file names |
 
 Both data files are checked against a schema at build time, so a typo in a field name or a status fails the build with a readable error instead of shipping a broken page.
 
@@ -43,7 +43,7 @@ Set `showPlaceholders: false` in `src/data/profile.yaml` to hide every note at o
 2. Create `src/content/work/<id>.mdx` with the same id. Write it in plain Markdown under these headings: Problem, Context and constraints, My role, Approach, Results, What I'd do differently, Next steps.
 3. Add a cover for the id in `src/components/Cover.astro`.
 
-Two components are available inside a case study without importing them: `<Flow steps={[...]} caption="..." />` for a pipeline diagram, and `<Pending>...</Pending>` for a note about missing content.
+These components are available inside a case study without importing them: `<Flow steps={[...]} caption="..." />` for a pipeline diagram, `<Shot src={image} alt="..." caption="..." />` for a screenshot, and `<Pending>...</Pending>` for a note about missing content.
 
 ### Skills that link to projects
 
@@ -56,23 +56,14 @@ In `profile.yaml`, each skill has a `projects` list of project ids. A skill with
 - **Fonts** are Newsreader (headings), Instrument Sans (text) and IBM Plex Mono (numbers). Astro downloads them at build time, subsets them to Latin and serves them from the site itself.
 - **Themes** follow the system setting. The toggle saves a choice only when it differs from the system, and a small inline script applies it before first paint so the wrong theme never flashes.
 - **Page transitions** use the browser's built-in cross-document View Transitions (CSS only). They, and every other animation, turn off under `prefers-reduced-motion`.
+- **Images** in `src/assets/` are converted to WebP and resized at build time, with width and height set.
 - **Link-preview images** are drawn at build time by `src/pages/og/[slug].png.ts`.
 - **SEO:** a unique title and description per page, canonical URLs, a sitemap, `robots.txt` and schema.org `Person` markup.
 - **Icons** are a small hand-drawn set in `src/components/Icon.astro`.
 
-## Before launch
+## Open items, updates and hosting
 
-- [ ] Choose the domain, then set `SITE_URL` in the host's build settings (or change the fallback in `astro.config.mjs`). Canonical URLs, the sitemap and link previews all use it. The current fallback, `https://rahai.dev`, is a placeholder.
-- [ ] Write the about paragraph (`about` in `profile.yaml`).
-- [ ] Add the final CV PDFs to `public/cv/`.
-- [ ] Fill the `<Pending>` notes in the three case studies, and replace the schematic covers with real screenshots and charts where they exist.
-- [ ] Add the timelines for Allocator and Horizon (`period` in `projects.yaml`).
-- [ ] Optional: add a Cloudflare Web Analytics token (`analyticsToken` in `profile.yaml`).
-- [ ] Optional: add a portrait (`portrait` in `profile.yaml`). The hero already has a slot for it.
-
-## Deploy
-
-The site is static, so any static host works. On Cloudflare Pages or GitHub Pages, the build command is `npm run build` and the output directory is `dist`.
+[GUIDE.md](GUIDE.md) lists what is still to add, how to make each kind of update, and how to put the site online at `hakimrahai.dev` with Cloudflare.
 
 ## Later
 

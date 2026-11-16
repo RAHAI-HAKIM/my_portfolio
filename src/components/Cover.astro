@@ -1,11 +1,27 @@
 ---
-// Cover figures, drawn as inline SVG so they follow the theme.
-// These are schematics of what each project does, not measured data.
-// Replace one with a real screenshot or chart by adding a <picture> branch.
+// Cover figures. A project with a real screenshot uses it; the others get a
+// schematic drawn as inline SVG (it follows the theme, and it is a drawing of
+// what the project does, not measured data).
+// To give a project a real cover, import the image and add it to `shots`.
+import { Image } from "astro:assets";
+import waymarkAdmin from "../assets/work/waymark/admin-home.png";
+
 interface Props {
   id: string;
+  /** Force the schematic even when a screenshot exists. */
+  schematic?: boolean;
+  /** Show the whole screenshot instead of a 16:9 crop, and load it eagerly. */
+  full?: boolean;
 }
-const { id } = Astro.props;
+const { id, schematic = false, full = false } = Astro.props;
+
+const shots: Record<string, { src: ImageMetadata; alt: string }> = {
+  waymark: {
+    src: waymarkAdmin,
+    alt: "Waymark's Admin home screen, in French, on a synthetic demo store. An Almanac card marked urgent reports a batch of wafers 43 days past its expiry date with 2 units still in stock, and offers to take the batch out of stock. Other cards list products without a price and shortcuts to add products or change prices.",
+  },
+};
+const shot = schematic ? undefined : shots[id];
 
 const alt: Record<string, string> = {
   waymark:
@@ -28,6 +44,20 @@ const col = 104;
 const row = 44;
 ---
 
+{
+  shot && (
+    <Image
+      class:list={["cover-shot", { full }]}
+      src={shot.src}
+      alt={shot.alt}
+      widths={[480, 800, 1200, shot.src.width]}
+      sizes="(min-width: 68rem) 64rem, 100vw"
+      loading={full ? "eager" : "lazy"}
+      fetchpriority={full ? "high" : "auto"}
+    />
+  )
+}
+{!shot && (
 <svg class="cover" viewBox="0 0 640 360" role="img" aria-label={alt[id] ?? ""}>
   {
     id === "waymark" && (
@@ -93,8 +123,21 @@ const row = 44;
     )
   }
 </svg>
+)}
 
 <style>
+  :global(img.cover-shot) {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    object-position: left top;
+  }
+
+  :global(img.cover-shot.full) {
+    aspect-ratio: auto;
+  }
+
   .cover {
     width: 100%;
     height: auto;

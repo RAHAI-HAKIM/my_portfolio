@@ -3,7 +3,9 @@ import { getCollection, render } from "astro:content";
 import type { CollectionEntry } from "astro:content";
 import Base from "../../layouts/Base.astro";
 import Cover from "../../components/Cover.astro";
+import Architecture from "../../components/Architecture.astro";
 import Flow from "../../components/Flow.astro";
+import Shot from "../../components/Shot.astro";
 import Icon from "../../components/Icon.astro";
 import Pending from "../../components/Pending.astro";
 import StatusBadge from "../../components/StatusBadge.astro";
@@ -103,13 +105,13 @@ const schema = {
 
     <figure class="cover">
       <div class="frame" style={`view-transition-name: cover-${project.id}`}>
-        <Cover id={project.id} />
+        <Cover id={project.id} full />
       </div>
       <figcaption>{study.data.coverCaption}</figcaption>
     </figure>
 
     <div class="study">
-      <Content components={{ Flow, Pending }} />
+      <Content components={{ Architecture, Cover, Flow, Pending, Shot }} />
     </div>
 
     <nav class="next" aria-label="Next case study">

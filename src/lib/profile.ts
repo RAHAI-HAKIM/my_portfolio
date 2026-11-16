@@ -35,6 +35,7 @@ const schema = z.object({
       degree: z.string().nullable(),
       period: z.string(),
       note: z.string(),
+      coursework: z.array(z.string()),
       grades: z.array(z.object({ label: z.string(), value: z.number(), grade: z.string() })),
     }),
   ),

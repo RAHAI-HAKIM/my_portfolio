@@ -1,0 +1,43 @@
+---
+// A screenshot inside a case study. Import the image in the MDX file:
+//   import till from "../../assets/work/waymark/till-sale.png";
+//   <Shot src={till} alt="..." caption="..." />
+import { Image } from "astro:assets";
+
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  caption?: string;
+}
+const { src, alt, caption } = Astro.props;
+---
+
+<figure class="shot">
+  <div class="frame">
+    <Image src={src} alt={alt} widths={[480, 800, 1200, src.width]} sizes="(min-width: 68rem) 52rem, 100vw" />
+  </div>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<style>
+  .shot {
+    margin-block: var(--s-3);
+  }
+
+  .frame {
+    overflow: hidden;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-m);
+  }
+
+  .frame :global(img) {
+    width: 100%;
+    height: auto;
+  }
+
+  figcaption {
+    margin-top: 0.75rem;
+    font-size: var(--step--1);
+    color: var(--ink-3);
+  }
+</style>

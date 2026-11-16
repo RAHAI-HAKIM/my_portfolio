@@ -1,52 +1,73 @@
 ---
-coverCaption: "Schematic, not store data: stock is tracked by batch, and the batch closest to its expiry date is flagged before it expires."
+coverCaption: "The Admin home screen on a synthetic demo store. Almanac's most urgent advice comes first: a batch 43 days past its date, with one button to take it out of stock."
 ---
+
+import tillSale from "../../assets/work/waymark/till-sale.png";
+import catalogue from "../../assets/work/waymark/admin-catalogue.png";
 
 {/*
   Disclosure rule for this page: show the problem, how Waymark solves it, and
   enough tech to prove competence. No DPIA, no business model or pricing,
-  no deep internals.
+  no deep internals. Every screenshot must come from a synthetic store.
 */}
 
 ## Problem
 
-Waymark is a point-of-sale system for small stores that also helps the owner decide what to do next. It started from interviews with four retailers.
+Small and medium stores lose money in two quiet ways: products expire on the shelf, and the stock on record stops matching the stock in the shop. I interviewed four retailers, and they ranked expiry losses and inaccurate stock among their biggest problems.
 
-<Pending>The problem statement: who has it and why it matters, in 2 to 3 sentences.</Pending>
+Waymark is a store management system for Algerian retailers built around those two problems. It is a till and a back office, plus Almanac, an engine that recommends what to order, mark down or watch, and shows why.
 
 ## Context and constraints
 
-The till works offline.
-
-<Pending>The data a store has, who uses the till and the Admin app, and the limits that shaped the design.</Pending>
+- **The internet is not reliable enough to sell on.** The till and the back office have to keep working without it, so Waymark is local-first: the store's own machine holds the data.
+- **A new store has no sales history.** Advice that needs months of data before it says anything arrives too late.
+- **The owner has to trust the advice.** A retailer will not act on a recommendation they cannot check, so the rule in the codebase is that code which cannot be explained does not ship.
+- **The till is used at speed.** Checkout works from the keyboard alone, and the interface is in Arabic and French.
 
 ## My role
 
-Waymark is a solo build. I am the founder, I ran the interviews with the four retailers, and I write the software.
+I am the founder and Waymark is a solo build. I ran the retailer interviews, designed the architecture, and wrote the till, the server, the Admin app and the first Almanac evaluator.
 
 ## Approach
 
-Waymark has two parts: an offline till and an Admin app. It is built with C#, .NET and Avalonia on SQLite, with React and TypeScript.
+**One server owns the data.** The till never opens the store database. It talks to StoreServer over HTTP even when both run on the same machine, and the Admin app does the same from any browser on the shop's network. Every rule lives in one place, and architecture tests fail the build if a project reaches across a layer it should not.
 
-One example of the decision support is the expiry alert. Stock is tracked per batch, so the system knows which units expire first and can warn the owner while there is still time to act.
+<Architecture caption="Waymark inside a store. Only StoreServer opens the database." />
+
+**Expiry alerts that work from day one.** Stock is tracked per batch and sold first in, first out, so Waymark always knows which units expire first. That needs no sales history, so the alert works on the first day.
 
 <Flow
   caption="How an expiry alert is produced."
   steps={[
-    { title: "Batch received", text: "A delivery enters stock as its own batch." },
+    { title: "Batch received", text: "A delivery enters stock as its own batch, with its date." },
     { title: "Stock by batch", text: "Sales draw from batches first in, first out." },
-    { title: "Alert before expiry", text: "A batch near its date is flagged early." },
-    { title: "Suggested action", text: "The owner gets a next step, not only a warning." },
+    { title: "Alert before expiry", text: "The evaluator flags a batch near or past its date." },
+    { title: "Suggested action", text: "The card offers a next step, not only a warning." },
   ]}
 />
 
-<Pending>An architecture diagram, and screenshots of the till and the Admin app.</Pending>
+**Interpretable methods over black-box ML.** Almanac uses operations research and statistics, so every recommendation can be explained to the retailer in terms of their own stock. The same card appears in the back office and on the till, where the cashier can act on it between two customers.
+
+<Shot
+  src={tillSale}
+  alt="Waymark's till in Arabic, on a synthetic demo store. A ticket holds one item with a total of 131.00 DA. The action buttons show their keyboard shortcuts, such as F12 to pay. Below them, an Almanac card reports the expired batch and offers buttons to take it out of stock, adjust it or ignore it."
+  caption="The till, in Arabic, with keyboard shortcuts on every action. The Almanac card is the same advice the owner sees in Admin."
+/>
+
+**A synthetic store for every demo and test.** A generator builds a complete grocery store from a config and a seed: the same inputs always give the same store. Demos and tests never touch a real shop's data, and the engine can be checked against demand that is known in advance.
+
+<Shot
+  src={catalogue}
+  alt="The Admin catalogue in French, on a synthetic demo store: a searchable list of products with barcodes, prices in dinars and status, and a filter for the 47 variants that have no price yet."
+  caption="The Admin catalogue. Variants without a price are counted and filterable, because the till refuses to sell them."
+/>
 
 ## Results
 
-- The offline till has shipped.
-- The Admin app is about 50% done.
-- Waymark is part of the ENSIA V2V incubator.
+- The offline-first till has shipped, with keyboard-only checkout and an Arabic interface.
+- The Admin app is about 50% complete.
+- Expiry alerts run in the store today and appear on both the till and Admin.
+- Waymark is supported by the ENSIA V2V incubator, and the first pilot was scheduled for November 2026.
 
 <Pending>The result of the pilot.</Pending>
 
@@ -56,6 +77,6 @@ One example of the decision support is the expiry alert. Stock is tracked per ba
 
 ## Next steps
 
-Finish the Admin app.
-
-<Pending>What comes after that.</Pending>
+- Finish the Admin app.
+- Run the first pilot in a real store.
+- Extend Almanac from expiry to its other two jobs: what to order and what to mark down.

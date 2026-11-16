@@ -138,6 +138,7 @@ const schema = {
                 <h3>{entry.school}</h3>
                 {entry.degree && <p class="org muted">{entry.degree}</p>}
                 <p class="line">{entry.note}</p>
+                {entry.coursework.length > 0 && <p class="line muted small">Coursework: {entry.coursework.join(", ")}.</p>}
                 {entry.grades.length > 1 && <div class="chart"><GradeTrend grades={entry.grades} /></div>}
               </div>
             </li>

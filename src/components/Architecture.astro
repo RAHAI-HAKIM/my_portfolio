@@ -1,0 +1,156 @@
+---
+// Waymark's parts inside a store, at the level the case study discloses:
+// two clients, one server, one database. Nothing here is drawn from store data.
+interface Props {
+  caption?: string;
+}
+const { caption } = Astro.props;
+---
+
+<figure class="arch">
+  <div class="map" role="img" aria-label="Architecture: the till and the Admin app both talk to StoreServer over HTTP. Only StoreServer opens the store database.">
+    <div class="node till">
+      <strong>Till</strong>
+      <span>Desktop app for the cashier. C#, .NET, Avalonia.</span>
+    </div>
+    <div class="link a"><span class="num">local HTTP</span></div>
+    <div class="node server">
+      <strong>StoreServer</strong>
+      <span>The only owner of the data. Runs the rules and Almanac's expiry evaluator. ASP.NET Core.</span>
+    </div>
+    <div class="link b"><span class="num">HTTP over LAN</span></div>
+    <div class="node admin">
+      <strong>Admin</strong>
+      <span>Back office in the browser. React, TypeScript.</span>
+    </div>
+    <div class="link down" aria-hidden="true"></div>
+    <div class="node db">
+      <strong>Store database</strong>
+      <span>SQLite, encrypted, on the store's own machine.</span>
+    </div>
+  </div>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<style>
+  .arch {
+    margin-block: var(--s-3);
+  }
+
+  .map {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .node {
+    display: grid;
+    gap: 0.25rem;
+    align-content: start;
+    padding: 0.875rem 1rem;
+    border: 1px solid var(--rule-strong);
+    border-radius: var(--radius-m);
+    background: var(--surface);
+    font-size: var(--step-0);
+    line-height: 1.45;
+  }
+
+  .node span {
+    color: var(--ink-2);
+  }
+
+  .node strong {
+    font-weight: 600;
+  }
+
+  .server {
+    border-color: var(--accent);
+  }
+
+  /* Phone: one column, in reading order, joined by short vertical lines. */
+  .link {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 2.5rem;
+    padding-left: 2.25rem;
+    font-size: var(--step--1);
+    color: var(--ink-3);
+  }
+
+  .link::before {
+    content: "";
+    position: absolute;
+    left: 1.25rem;
+    top: 0;
+    bottom: 0;
+    border-left: 1px solid var(--rule-strong);
+  }
+
+  .till { order: 1; }
+  .a { order: 2; }
+  .server { order: 3; }
+  .down { order: 4; }
+  .db { order: 5; }
+  .b { order: 6; }
+  .admin { order: 7; }
+
+  /* On a phone the Admin app comes last, so say where its line leads. */
+  .b .num::after {
+    content: " to StoreServer";
+  }
+
+  figcaption {
+    margin-top: var(--s-2);
+    font-size: var(--step--1);
+    color: var(--ink-3);
+  }
+
+  @media (min-width: 46rem) {
+    .map {
+      grid-template-columns: minmax(0, 1fr) 7.5rem minmax(0, 1.25fr) 7.5rem minmax(0, 1fr);
+      grid-template-areas:
+        "till a server b admin"
+        ".    . down   . ."
+        ".    . db     . .";
+    }
+
+    .till { grid-area: till; }
+    .a { grid-area: a; }
+    .server { grid-area: server; }
+    .b { grid-area: b; }
+    .admin { grid-area: admin; }
+    .down { grid-area: down; }
+    .db { grid-area: db; }
+
+    .link.a,
+    .link.b {
+      justify-content: center;
+      align-items: flex-start;
+      padding: 0.5rem 0 0;
+      min-height: 0;
+    }
+
+    .link.a::before,
+    .link.b::before {
+      left: 0;
+      right: 0;
+      top: 2.25rem;
+      bottom: auto;
+      border-left: 0;
+      border-top: 1px solid var(--rule-strong);
+    }
+
+    .link.down {
+      min-height: 2rem;
+      padding: 0;
+    }
+
+    .link.down::before {
+      left: 50%;
+    }
+
+    .b .num::after {
+      content: none;
+    }
+  }
+</style>

@@ -1,0 +1,61 @@
+---
+import Icon from "./Icon.astro";
+import { profile } from "../lib/profile";
+---
+
+<div class="copy-email">
+  <a class="address" href={`mailto:${profile.email}`}>{profile.email}</a>
+  <button class="button" type="button" data-copy={profile.email}>
+    <span class="idle"><Icon name="copy" size={18} /></span>
+    <span class="done"><Icon name="check" size={18} /></span>
+    <span data-copy-label aria-live="polite">Copy email</span>
+  </button>
+</div>
+
+<style>
+  .copy-email {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-2) var(--s-3);
+  }
+
+  .address {
+    font-family: var(--serif);
+    font-size: clamp(1.25rem, 0.9rem + 1.6vw, 1.75rem);
+    letter-spacing: -0.01em;
+    overflow-wrap: anywhere;
+    text-decoration-color: var(--accent);
+  }
+
+  .done,
+  [data-copied] .idle {
+    display: none;
+  }
+
+  [data-copied] .done {
+    display: block;
+  }
+</style>
+
+<script>
+  const button = document.querySelector<HTMLButtonElement>("[data-copy]");
+  const label = button?.querySelector<HTMLElement>("[data-copy-label]");
+  let timer: number | undefined;
+
+  button?.addEventListener("click", async () => {
+    if (!label) return;
+    try {
+      await navigator.clipboard.writeText(button.dataset.copy ?? "");
+      button.toggleAttribute("data-copied", true);
+      label.textContent = "Copied";
+    } catch {
+      label.textContent = "Copy failed, select the address instead";
+    }
+    window.clearTimeout(timer);
+    timer = window.setTimeout(() => {
+      button.removeAttribute("data-copied");
+      label.textContent = "Copy email";
+    }, 2000);
+  });
+</script>

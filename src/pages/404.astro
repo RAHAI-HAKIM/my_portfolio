@@ -1,0 +1,38 @@
+---
+import Base from "../layouts/Base.astro";
+import { profile } from "../lib/profile";
+---
+
+<Base title={`Page not found | ${profile.displayName}`} description="This page does not exist." noindex>
+  <div class="page lost">
+    <p class="num code">404</p>
+    <h1>No feasible solution at this address.</h1>
+    <p class="muted">The page may have moved, or the link may be wrong. The work is all on the home page.</p>
+    <a class="button primary" href="/">Go to the home page</a>
+  </div>
+</Base>
+
+<style>
+  .lost {
+    display: grid;
+    gap: var(--s-3);
+    justify-items: start;
+    padding-block: clamp(4rem, 14vw, 9rem);
+  }
+
+  .code {
+    color: var(--accent);
+  }
+
+  h1 {
+    max-width: 16ch;
+    font-size: var(--step-5);
+    font-weight: 350;
+    line-height: 1.04;
+    letter-spacing: -0.028em;
+  }
+
+  .muted {
+    max-width: 30rem;
+  }
+</style>

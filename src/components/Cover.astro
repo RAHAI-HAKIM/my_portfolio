@@ -1,0 +1,185 @@
+---
+// Cover figures, drawn as inline SVG so they follow the theme.
+// These are schematics of what each project does, not measured data.
+// Replace one with a real screenshot or chart by adding a <picture> branch.
+interface Props {
+  id: string;
+}
+const { id } = Astro.props;
+
+const alt: Record<string, string> = {
+  waymark:
+    "Schematic: four stock batches on a timeline. The batch closest to its expiry date is highlighted and flagged before it expires.",
+  allocator:
+    "Schematic: a weekly timetable grid with class sessions placed in room and time slots, a few of them highlighted.",
+  horizon:
+    "Schematic: a time series followed by a forecast line with 80% and 95% prediction intervals widening over time.",
+};
+
+// Allocator grid: [column, row, rowSpan, highlighted]
+const sessions: [number, number, number, boolean][] = [
+  [0, 0, 1, false], [0, 1, 2, false], [0, 4, 1, false],
+  [1, 0, 2, true], [1, 2, 1, false], [1, 4, 1, false],
+  [2, 1, 1, false], [2, 2, 2, false],
+  [3, 0, 1, false], [3, 1, 1, true], [3, 3, 2, false],
+  [4, 0, 2, false], [4, 2, 1, true],
+];
+const col = 104;
+const row = 44;
+---
+
+<svg class="cover" viewBox="0 0 640 360" role="img" aria-label={alt[id] ?? ""}>
+  {
+    id === "waymark" && (
+      <g>
+        <line class="rule" x1="56" y1="296" x2="584" y2="296" />
+        {[56, 144, 232, 320, 408, 496, 584].map((x) => <line class="rule" x1={x} y1="296" x2={x} y2="302" />)}
+
+        <rect class="bar" x="72" y="76" width="300" height="26" rx="5" />
+        <rect class="sold" x="72" y="76" width="210" height="26" rx="5" />
+
+        <rect class="bar hot" x="120" y="128" width="204" height="26" rx="5" />
+        <rect class="sold hot" x="120" y="128" width="96" height="26" rx="5" />
+        <path class="flag" d="M324 110v62" />
+        <circle class="dot" cx="324" cy="110" r="5" />
+
+        <rect class="bar" x="188" y="180" width="330" height="26" rx="5" />
+        <rect class="sold" x="188" y="180" width="60" height="26" rx="5" />
+
+        <rect class="bar" x="236" y="232" width="320" height="26" rx="5" />
+
+        <line class="today" x1="264" y1="52" x2="264" y2="296" />
+        <text class="label" x="264" y="322" text-anchor="middle">today</text>
+        <text class="label accent" x="334" y="114">expires soon</text>
+      </g>
+    )
+  }
+  {
+    id === "allocator" && (
+      <g transform="translate(60 48)">
+        {[0, 1, 2, 3, 4, 5, 6].map((r) => <line class="rule" x1="0" y1={r * row} x2={5 * col} y2={r * row} />)}
+        {[0, 1, 2, 3, 4, 5].map((c) => <line class="rule" x1={c * col} y1="0" x2={c * col} y2={6 * row} />)}
+        {
+          sessions.map(([c, r, span, hot]) => (
+            <rect
+              class:list={["cell", { hot }]}
+              x={c * col + 6}
+              y={r * row + 6}
+              width={col - 12}
+              height={span * row - 12}
+              rx="5"
+            />
+          ))
+        }
+      </g>
+    )
+  }
+  {
+    id === "horizon" && (
+      <g>
+        <line class="rule" x1="40" y1="296" x2="600" y2="296" />
+        {[40, 120, 200, 280, 360, 440, 520, 600].map((x) => <line class="rule" x1={x} y1="296" x2={x} y2="302" />)}
+        <polygon class="band" points="400,158 450,124 500,104 550,87 600,70 600,178 550,177 500,176 450,172" />
+        <polygon class="band" points="400,158 450,134 500,120 550,107 600,95 600,153 550,157 500,160 450,162" />
+        <polyline
+          class="series"
+          points="40,230 70,215 100,225 130,200 160,210 190,185 220,195 250,170 280,180 310,160 340,172 370,150 400,158"
+        />
+        <polyline class="forecast" points="400,158 450,148 500,140 550,132 600,124" />
+        <line class="today" x1="400" y1="52" x2="400" y2="296" />
+        <text class="label" x="220" y="322" text-anchor="middle">observed</text>
+        <text class="label accent" x="500" y="322" text-anchor="middle">forecast</text>
+      </g>
+    )
+  }
+</svg>
+
+<style>
+  .cover {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    background: var(--surface);
+  }
+
+  .rule {
+    stroke: var(--rule);
+    stroke-width: 1;
+  }
+
+  .today {
+    stroke: var(--ink-3);
+    stroke-width: 1;
+    stroke-dasharray: 3 4;
+  }
+
+  .label {
+    font-family: var(--mono);
+    font-size: 14px;
+    fill: var(--ink-3);
+  }
+
+  .label.accent {
+    fill: var(--accent);
+  }
+
+  /* Waymark */
+  .bar {
+    fill: none;
+    stroke: var(--rule-strong);
+    stroke-width: 1.25;
+  }
+
+  .sold {
+    fill: var(--rule);
+  }
+
+  .bar.hot {
+    stroke: var(--accent);
+  }
+
+  .sold.hot {
+    fill: var(--accent);
+    opacity: 0.28;
+  }
+
+  .flag {
+    stroke: var(--accent);
+    stroke-width: 1.25;
+  }
+
+  .dot {
+    fill: var(--accent);
+  }
+
+  /* Allocator */
+  .cell {
+    fill: var(--rule);
+  }
+
+  .cell.hot {
+    fill: var(--accent);
+  }
+
+  /* Horizon */
+  .series,
+  .forecast {
+    fill: none;
+    stroke-width: 1.75;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+  }
+
+  .series {
+    stroke: var(--ink);
+  }
+
+  .forecast {
+    stroke: var(--accent);
+  }
+
+  .band {
+    fill: var(--accent);
+    opacity: 0.14;
+  }
+</style>

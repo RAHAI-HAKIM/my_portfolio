@@ -1,0 +1,56 @@
+---
+coverCaption: "Schematic, not the real timetable: sessions placed in a weekly grid of rooms and time slots."
+---
+
+## Problem
+
+Every semester a university has to fit its classes into a limited number of rooms and time slots. A timetable can be valid and still be a bad week for students: long walks between rooms, courses that keep changing rooms, small groups in large halls.
+
+The Course-to-Room Allocator builds the assignment for ENSIA automatically and aims to beat the one currently in use.
+
+## Context and constraints
+
+The data is real: floor plans and class lists from the ENSIA administration. The approach was also tested against the ITC2007 timetabling benchmark.
+
+A timetable only counts if it meets every hard constraint:
+
+- No room holds more students than it has seats.
+- A session that needs a lab gets the right kind of room.
+- No room is booked twice at the same time.
+
+On top of that sit nine soft constraints that measure how good a valid timetable is. They include keeping a group's classes close together, keeping a course in the same room through the semester, and not wasting large rooms on small groups.
+
+## My role
+
+This was a team of six. I built all nine soft constraints and both objective functions, the part of the system that scores a timetable and tells the search which of two candidates is better.
+
+## Approach
+
+<Flow
+  caption="From ENSIA's data to a timetable."
+  steps={[
+    { title: "ENSIA data", text: "Rooms, floor plans and class lists." },
+    { title: "Hard constraints", text: "Capacity, room type, no double booking." },
+    { title: "Cost", text: "Nine soft constraints, two objective functions." },
+    { title: "Search", text: "Hill Climbing, Simulated Annealing, Tabu Search." },
+    { title: "Timetable", text: "Feasible, then compared with the current one." },
+  ]}
+/>
+
+Three local-search methods ran against the same cost so they could be compared fairly. Hill Climbing only accepts improvements. Simulated Annealing also accepts some worse moves early on, which lets it leave a poor local optimum. Tabu Search remembers recent moves so it does not go back to them.
+
+## Results
+
+- The system produced a feasible timetable on ENSIA's real data.
+- That timetable beat the current assignment on every soft-constraint metric.
+- Simulated Annealing performed best of the three methods.
+
+<Pending>Measured improvements from a rerun (for example, average travel and gaps), the cost curve per method, and a screenshot of a timetable.</Pending>
+
+## What I'd do differently
+
+<Pending>Lessons from the project, including the cost-scale bug.</Pending>
+
+## Next steps
+
+<Pending>What Hakim plans next for the allocator.</Pending>

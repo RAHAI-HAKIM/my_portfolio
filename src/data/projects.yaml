@@ -1,0 +1,87 @@
+# One entry per project. Featured projects also need a case study at
+# src/content/work/<id>.mdx. null means "not known yet" (see profile.yaml).
+#
+# status: live | in-progress | complete | private | repo-coming
+# links.repo: a URL, or null. links.demo: a URL, "on-request", or null.
+
+- id: waymark
+  title: Waymark
+  tagline: Retail POS and decision support for small stores
+  description: Waymark is a point-of-sale and decision-support startup for small retailers, built solo by Hakim Rahai inside the ENSIA V2V incubator.
+  role: Founder, solo build
+  team: 1
+  period: 2026 – present
+  status: in-progress
+  statusNote: ENSIA V2V incubator
+  featured: true
+  order: 1
+  result: Built from interviews with 4 retailers. The offline till has shipped and the Admin app is about 50% done.
+  stack: ["C#", .NET, Avalonia, SQLite, React, TypeScript]
+  tags: ["C#", .NET / Avalonia, SQLite, React]
+  links: { repo: null, demo: on-request }
+
+- id: allocator
+  title: Course-to-Room Allocator
+  tagline: A feasible university timetable, found by local search
+  description: A timetabling system that assigns ENSIA's courses to rooms with Simulated Annealing, Hill Climbing and Tabu Search, and beats the current assignment on every soft-constraint metric.
+  role: Built all 9 soft constraints and both objective functions
+  team: 6
+  period: null
+  status: complete
+  statusNote: null
+  featured: true
+  order: 2
+  result: A feasible timetable on ENSIA's real data that beat the current assignment on every soft-constraint metric. Simulated Annealing performed best.
+  stack: [Python, Simulated Annealing, Hill Climbing, Tabu Search, CSP]
+  tags: [Python, Simulated Annealing, Tabu Search, CSP]
+  links:
+    repo: https://github.com/RAHAI-HAKIM/Course-to-Room-Allocator
+    demo: null
+
+- id: horizon
+  title: Horizon
+  tagline: A forecasting and statistical learning pipeline
+  description: Horizon is a solo-built pipeline that takes raw data to validated forecasts (naive, drift, ETS, ARIMA) and statistical learning models (Lasso, splines, GAMs) through one interface.
+  role: Solo
+  team: 1
+  period: null
+  status: repo-coming
+  statusNote: null
+  featured: true
+  order: 3
+  result: One interface from raw data to validated forecasts (naive, drift, ETS, ARIMA) and models (Lasso, splines, GAMs).
+  stack: [ETS, ARIMA, Lasso, Splines, GAMs]
+  tags: [Forecasting, ETS, ARIMA, GAMs]
+  links: { repo: null, demo: null }
+
+- id: proffer
+  title: Proffer
+  tagline: A mobile app for freelancers to manage leads, quotations, follow-ups and payments.
+  description: null
+  role: Team lead
+  team: 3
+  period: null
+  status: in-progress
+  statusNote: null
+  featured: false
+  order: 4
+  result: null
+  stack: []
+  tags: []
+  links: { repo: null, demo: null }
+
+- id: crucible
+  title: Crucible
+  tagline: A configurable quality-control and defect-tracking system for factories, from the Software Engineering course.
+  description: null
+  role: Team lead
+  team: 6
+  period: null
+  status: in-progress
+  statusNote: null
+  featured: false
+  order: 5
+  result: null
+  stack: []
+  tags: []
+  links: { repo: null, demo: null }

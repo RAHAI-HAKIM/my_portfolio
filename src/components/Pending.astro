@@ -1,0 +1,13 @@
+---
+// A visible note for content that has not been written yet.
+// Hidden everywhere once showPlaceholders is false in profile.yaml.
+import { profile } from "../lib/profile";
+
+interface Props {
+  inline?: boolean;
+}
+const { inline = false } = Astro.props;
+const Tag = inline ? "span" : "p";
+---
+
+{profile.showPlaceholders && <Tag class="pending"><slot /></Tag>}

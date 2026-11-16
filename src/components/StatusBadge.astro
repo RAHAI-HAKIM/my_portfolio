@@ -1,0 +1,52 @@
+---
+import { statusLabel } from "../lib/profile";
+
+interface Props {
+  status: string;
+  note?: string | null;
+}
+const { status, note } = Astro.props;
+---
+
+<span class="badge" data-status={status}>
+  <span class="mark" aria-hidden="true"></span>
+  <span>{statusLabel[status] ?? status}{note && <span class="note">{`, ${note}`}</span>}</span>
+</span>
+
+<style>
+  .badge {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.45rem;
+    font-size: var(--step--1);
+    font-weight: 500;
+    line-height: 1.4;
+    color: var(--ink-2);
+  }
+
+  .note {
+    font-weight: 400;
+  }
+
+  /* The state is carried by the shape of the mark, not by colour alone:
+     filled = finished, ring = under way, dashed ring = not public yet. */
+  .mark {
+    flex: none;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    border: 1.5px solid var(--accent);
+    transform: translateY(-0.02em);
+  }
+
+  [data-status="complete"] .mark,
+  [data-status="live"] .mark {
+    background: var(--accent);
+  }
+
+  [data-status="private"] .mark,
+  [data-status="repo-coming"] .mark {
+    border-style: dotted;
+    border-color: var(--ink-3);
+  }
+</style>

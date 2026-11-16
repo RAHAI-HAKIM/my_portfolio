@@ -1,0 +1,33 @@
+---
+import { profile } from "../lib/profile";
+
+const built = new Date();
+const updated = built.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+---
+
+<footer class="page">
+  <div class="inner">
+    {profile.interests && <p class="interests">Away from the keyboard: {profile.interests.charAt(0).toLowerCase() + profile.interests.slice(1)}</p>}
+    <p>
+      Last updated <time datetime={built.toISOString().slice(0, 10)}>{updated}</time>
+    </p>
+    <p>© {built.getFullYear()} {profile.name}</p>
+  </div>
+</footer>
+
+<style>
+  .inner {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem var(--s-4);
+    padding-block: var(--s-4) var(--s-5);
+    border-top: 1px solid var(--rule);
+    font-size: var(--step--1);
+    color: var(--ink-3);
+  }
+
+  .interests {
+    flex: 1 1 100%;
+    max-width: var(--measure);
+  }
+</style>

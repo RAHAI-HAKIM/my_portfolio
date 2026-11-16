@@ -1,0 +1,109 @@
+# One source of truth for everything about Hakim that is not a project.
+# Facts come from the CV (EN, Nov 2026). Never invent numbers or claims.
+# A value of null means "not written yet": the site shows a visible
+# placeholder for it while showPlaceholders is true, and hides it otherwise.
+
+showPlaceholders: true
+
+name: RAHAI Mohamed Abdelhakim
+displayName: Hakim Rahai
+title: AI engineering student
+focus: Data science and optimization
+positioning: I build optimization and decision-support systems for real businesses.
+location: Sougueur, Tiaret, Algeria
+
+# Changes over time. Each item is one short phrase.
+status:
+  - Building Waymark
+  - ENSIA V2V incubator
+  - Open to 2027 internships
+
+# 3-4 sentences in Hakim's own words.
+about: null
+
+# Path under /public, e.g. /images/portrait.webp. v1 ships without one.
+portrait: null
+
+email: mohamedabdelhakim.rahai@gmail.com
+links:
+  github: https://github.com/RAHAI-HAKIM
+  linkedin: https://www.linkedin.com/in/hakim-rahai/
+
+# The download buttons appear only when the file exists in /public/cv.
+cv:
+  en: /cv/CV_RAHAI_Mohamed-Abdelhakim_EN.pdf
+  fr: /cv/CV_RAHAI_Mohamed-Abdelhakim_FR.pdf
+
+# Cloudflare Web Analytics token (free, no cookies). null turns it off.
+analyticsToken: null
+
+leadership:
+  - period: 2026–2027
+    role: Head of IT Department
+    org: EBEC, the ENSIA Business & Entrepreneurship Club
+    lines:
+      - "Leads a 15-member IT team for a 9-event annual program: Ignite (60+ companies meeting students), the Fikratech hackathon, and the Data2Venture 3-day datathon."
+      - Owns websites, registration, partner tech coordination, badges, and datathon datasets and review. Delivered the Open Day game platform.
+  - period: 2026–2027
+    role: Course project team lead
+    org: ENSIA
+    lines:
+      - Leads the teams building Proffer (3 people) and Crucible (6 people).
+  - period: 2017–2024
+    role: Algerian Muslim Scouts (SMA)
+    org: null
+    lines:
+      - Seven years organizing and supporting group activities and events.
+
+education:
+  - school: ENSIA, National School of Artificial Intelligence
+    degree: State Engineering Diploma in Artificial Intelligence
+    period: 2024–2029
+    note: Currently in Year 3.
+    grades:
+      - { label: Year 1, value: 13.35, grade: C }
+      - { label: Year 2, value: 15.14, grade: A }
+  - school: Baccalauréat in Mathematics
+    degree: null
+    period: "2024"
+    note: 18.24/20, top 0.33% nationally. About 2,800 of 860,000 candidates scored 18 or above.
+    grades: []
+
+# `projects` lists the slugs from projects.yaml that use the skill.
+# Only list a project when the CV or the project itself confirms it.
+skills:
+  - group: Programming
+    items:
+      - { name: Python, projects: [allocator] }
+      - { name: Java, projects: [] }
+      - { name: "C#", projects: [waymark] }
+      - { name: TypeScript, projects: [waymark] }
+      - { name: SQL, projects: [] }
+  - group: Data and optimization
+    items:
+      - { name: Polars, projects: [] }
+      - { name: statsmodels, projects: [] }
+      - { name: Google OR-Tools, projects: [] }
+      - { name: DuckDB, projects: [] }
+      - { name: "Metaheuristics (SA, Tabu, Hill Climbing)", projects: [allocator] }
+      - { name: Constraint satisfaction, projects: [allocator] }
+      - { name: "Time-series forecasting (ETS, ARIMA)", projects: [horizon] }
+      - { name: "Statistical learning (Lasso, splines, GAMs)", projects: [horizon] }
+      - { name: Hypothesis testing, projects: [] }
+      - { name: Decision analysis, projects: [] }
+  - group: Software and tools
+    items:
+      - { name: .NET / Avalonia, projects: [waymark] }
+      - { name: React, projects: [waymark] }
+      - { name: SQLite, projects: [waymark] }
+      - { name: PostgreSQL, projects: [] }
+      - { name: Java concurrency, projects: [] }
+      - { name: Git / GitHub, projects: [] }
+      - { name: LaTeX, projects: [] }
+  - group: Languages
+    items:
+      - { name: Arabic (native), projects: [] }
+      - { name: English (C1), projects: [] }
+      - { name: "French (B2, TCF result pending)", projects: [] }
+
+interests: Football (registered with a regional club, ages 10–16), software engineering, software modeling.

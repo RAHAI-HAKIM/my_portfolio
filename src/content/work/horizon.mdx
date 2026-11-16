@@ -1,0 +1,47 @@
+---
+coverCaption: "Schematic, not a real series: a forecast with 80% and 95% prediction intervals."
+---
+
+## Problem
+
+Horizon puts forecasting and statistical learning behind one interface, from raw data to validated results.
+
+<Pending>The problem statement: who needs this and why it matters, in 2 to 3 sentences.</Pending>
+
+## Context and constraints
+
+<Pending>The datasets Horizon runs on, who it is for, and its limits.</Pending>
+
+## My role
+
+Horizon is a solo project. I designed it and wrote all of it.
+
+## Approach
+
+<Flow
+  caption="One interface covers every stage."
+  steps={[
+    { title: "Raw data", text: "A series goes in as it comes." },
+    { title: "Forecasting", text: "Naive, drift, ETS and ARIMA." },
+    { title: "Statistical learning", text: "Lasso, splines and GAMs." },
+    { title: "Validation", text: "Each result is checked before it is reported." },
+  ]}
+/>
+
+Naive and drift forecasts are the baselines that ETS and ARIMA have to beat.
+
+## Results
+
+<Pending>One or two forecast charts with intervals, and accuracy per method on public datasets.</Pending>
+
+## What I'd do differently
+
+Building Horizon surfaced bugs that bias results without raising any error: double differencing, data leakage and mis-scaled regularization.
+
+<Pending>What Hakim changed, or would change, because of them.</Pending>
+
+## Next steps
+
+Publish the repository.
+
+<Pending>What comes after that.</Pending>

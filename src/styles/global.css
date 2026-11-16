@@ -1,0 +1,414 @@
+/* ------------------------------------------------------------------
+   Design tokens
+   Paper and ink, one green accent. Spacing follows an 8px rhythm.
+   ------------------------------------------------------------------ */
+
+:root {
+  color-scheme: light;
+
+  --paper: #f4f3ee;
+  --surface: #fbfaf7;
+  --ink: #1a1c1a;
+  --ink-2: #474b46;
+  --ink-3: #666a64;
+  --rule: #dcdad2;
+  --rule-strong: #b9b7ae;
+  --accent: #1b5b45;
+  --accent-ink: #f4f3ee;
+  --accent-soft: #e2ebe5;
+
+  --serif: var(--font-newsreader), "Iowan Old Style", Georgia, serif;
+  --sans: var(--font-instrument), system-ui, "Segoe UI", sans-serif;
+  --mono: var(--font-plex-mono), ui-monospace, Consolas, monospace;
+
+  --step--1: 0.8125rem;
+  --step-0: 0.9375rem;
+  --step-1: 1.0625rem;
+  --step-2: 1.25rem;
+  --step-3: 1.5rem;
+  --step-4: clamp(1.75rem, 1.4rem + 1.4vw, 2.25rem);
+  --step-5: clamp(2.25rem, 1.5rem + 3.4vw, 4rem);
+
+  --s-1: 0.5rem;
+  --s-2: 1rem;
+  --s-3: 1.5rem;
+  --s-4: 2rem;
+  --s-5: 3rem;
+  --s-6: 4rem;
+  --s-7: 6rem;
+
+  --radius-s: 4px;
+  --radius-m: 10px;
+
+  --page: 68rem;
+  --rail: 11rem;
+  --measure: 38rem;
+  --gutter: clamp(1.25rem, 5vw, 2.5rem);
+
+  --fast: 160ms;
+  --ease: cubic-bezier(0.2, 0.6, 0.2, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --paper: #121412;
+    --surface: #191c19;
+    --ink: #e8e7e1;
+    --ink-2: #b6b8b1;
+    --ink-3: #8f928b;
+    --rule: #2a2e2a;
+    --rule-strong: #454a45;
+    --accent: #8ccfb0;
+    --accent-ink: #0f1a15;
+    --accent-soft: #1b2923;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #121412;
+  --surface: #191c19;
+  --ink: #e8e7e1;
+  --ink-2: #b6b8b1;
+  --ink-3: #8f928b;
+  --rule: #2a2e2a;
+  --rule-strong: #454a45;
+  --accent: #8ccfb0;
+  --accent-ink: #0f1a15;
+  --accent-soft: #1b2923;
+}
+
+/* ------------------------------------------------------------------
+   Base
+   ------------------------------------------------------------------ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: 5rem;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: var(--step-1);
+  line-height: 1.6;
+  font-synthesis-weight: none;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Only while the visitor is switching themes, so page loads never fade. */
+html.theme-switching,
+html.theme-switching * {
+  transition:
+    background-color 200ms var(--ease),
+    border-color 200ms var(--ease),
+    color 200ms var(--ease) !important;
+}
+
+h1,
+h2,
+h3,
+p,
+ul,
+ol,
+dl,
+dd,
+figure {
+  margin: 0;
+}
+
+ul,
+ol {
+  padding: 0;
+  list-style: none;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--serif);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.012em;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration-color: var(--rule-strong);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  transition: text-decoration-color var(--fast) var(--ease), color var(--fast) var(--ease);
+}
+
+a:hover {
+  text-decoration-color: currentColor;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.num {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.92em;
+  letter-spacing: -0.01em;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--gutter);
+  top: -4rem;
+  z-index: 20;
+  padding: 0.5rem 0.875rem;
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: var(--radius-s);
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  top: 0.75rem;
+}
+
+/* ------------------------------------------------------------------
+   Layout
+   ------------------------------------------------------------------ */
+
+.page {
+  width: 100%;
+  max-width: calc(var(--page) + 2 * var(--gutter));
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* A section: its heading sits in the left margin on wide screens,
+   the way a book sets a shoulder note beside the text block. */
+.band {
+  display: grid;
+  gap: var(--s-3);
+  padding-block: var(--s-5);
+  border-top: 1px solid var(--rule);
+}
+
+.band > h2 {
+  font-size: var(--step-3);
+}
+
+.band-body {
+  min-width: 0;
+}
+
+@media (min-width: 60rem) {
+  .band {
+    grid-template-columns: var(--rail) minmax(0, 1fr);
+    gap: var(--s-4);
+    padding-block: var(--s-6);
+  }
+
+  .band > h2 {
+    font-size: var(--step-2);
+    line-height: 1.3;
+    padding-top: 0.15em;
+  }
+}
+
+.prose {
+  max-width: var(--measure);
+}
+
+.prose > * + * {
+  margin-top: var(--s-2);
+}
+
+.muted {
+  color: var(--ink-2);
+}
+
+.small {
+  font-size: var(--step-0);
+}
+
+/* ------------------------------------------------------------------
+   Buttons and links
+   ------------------------------------------------------------------ */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0.5rem 1.125rem;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--step-0);
+  font-weight: 500;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color var(--fast) var(--ease),
+    color var(--fast) var(--ease),
+    border-color var(--fast) var(--ease);
+}
+
+.button:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.button.primary {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.button.primary:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+.button svg {
+  flex: none;
+}
+
+.icon-link {
+  display: inline-grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 999px;
+  color: var(--ink-2);
+  transition: color var(--fast) var(--ease), background-color var(--fast) var(--ease);
+}
+
+.icon-link:hover {
+  color: var(--ink);
+  background: var(--accent-soft);
+}
+
+/* ------------------------------------------------------------------
+   Placeholder for content Hakim has not written yet
+   ------------------------------------------------------------------ */
+
+.pending {
+  display: block;
+  max-width: var(--measure);
+  padding: 0.75rem 1rem;
+  border: 1px dashed var(--rule-strong);
+  border-radius: var(--radius-s);
+  color: var(--ink-2);
+  font-size: var(--step-0);
+  line-height: 1.5;
+}
+
+.pending::before {
+  content: "To add";
+  display: inline-block;
+  margin-right: 0.625rem;
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  color: var(--ink-3);
+}
+
+span.pending {
+  display: inline;
+  padding: 0.1rem 0.4rem;
+}
+
+span.pending::before {
+  content: none;
+}
+
+/* ------------------------------------------------------------------
+   Motion: one short entrance on page load, nothing on scroll.
+   ------------------------------------------------------------------ */
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+.rise {
+  animation: rise 240ms var(--ease) both;
+  animation-delay: calc(var(--i, 0) * 60ms);
+}
+
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 200ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @view-transition {
+    navigation: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media print {
+  .site-header,
+  .skip-link {
+    display: none;
+  }
+
+  body {
+    background: #fff;
+    color: #000;
+  }
+}

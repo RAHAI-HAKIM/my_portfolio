@@ -1,0 +1,61 @@
+---
+coverCaption: "Schematic, not store data: stock is tracked by batch, and the batch closest to its expiry date is flagged before it expires."
+---
+
+{/*
+  Disclosure rule for this page: show the problem, how Waymark solves it, and
+  enough tech to prove competence. No DPIA, no business model or pricing,
+  no deep internals.
+*/}
+
+## Problem
+
+Waymark is a point-of-sale system for small stores that also helps the owner decide what to do next. It started from interviews with four retailers.
+
+<Pending>The problem statement: who has it and why it matters, in 2 to 3 sentences.</Pending>
+
+## Context and constraints
+
+The till works offline.
+
+<Pending>The data a store has, who uses the till and the Admin app, and the limits that shaped the design.</Pending>
+
+## My role
+
+Waymark is a solo build. I am the founder, I ran the interviews with the four retailers, and I write the software.
+
+## Approach
+
+Waymark has two parts: an offline till and an Admin app. It is built with C#, .NET and Avalonia on SQLite, with React and TypeScript.
+
+One example of the decision support is the expiry alert. Stock is tracked per batch, so the system knows which units expire first and can warn the owner while there is still time to act.
+
+<Flow
+  caption="How an expiry alert is produced."
+  steps={[
+    { title: "Batch received", text: "A delivery enters stock as its own batch." },
+    { title: "Stock by batch", text: "Sales draw from batches first in, first out." },
+    { title: "Alert before expiry", text: "A batch near its date is flagged early." },
+    { title: "Suggested action", text: "The owner gets a next step, not only a warning." },
+  ]}
+/>
+
+<Pending>An architecture diagram, and screenshots of the till and the Admin app.</Pending>
+
+## Results
+
+- The offline till has shipped.
+- The Admin app is about 50% done.
+- Waymark is part of the ENSIA V2V incubator.
+
+<Pending>The result of the pilot.</Pending>
+
+## What I'd do differently
+
+<Pending>What Hakim would change if he started Waymark again.</Pending>
+
+## Next steps
+
+Finish the Admin app.
+
+<Pending>What comes after that.</Pending>

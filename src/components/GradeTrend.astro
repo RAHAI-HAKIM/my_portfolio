@@ -1,0 +1,95 @@
+---
+// A small slope chart of yearly averages. Real grades only, scale 10 to 20.
+interface Props {
+  grades: { label: string; value: number; grade: string }[];
+}
+const { grades } = Astro.props;
+
+const W = 320;
+const H = 150;
+const axis = 30;
+const left = 84;
+const right = W - 64;
+const top = 22;
+const bottom = H - 34;
+const min = 10;
+const max = 20;
+
+const x = (i: number) => (grades.length === 1 ? left : left + (i * (right - left)) / (grades.length - 1));
+const y = (v: number) => bottom - ((v - min) / (max - min)) * (bottom - top);
+const points = grades.map((g, i) => `${x(i)},${y(g.value)}`).join(" ");
+const summary = grades.map((g) => `${g.label}: ${g.value.toFixed(2)} out of 20`).join(", ");
+---
+
+<figure class="trend">
+  <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`Yearly average. ${summary}.`}>
+    {
+      [10, 15, 20].map((tick) => (
+        <>
+          <line class="grid" x1={axis} y1={y(tick)} x2={W - 8} y2={y(tick)} />
+          <text class="tick" x={axis - 8} y={y(tick) + 4} text-anchor="end">{tick}</text>
+        </>
+      ))
+    }
+    <polyline class="line" points={points} />
+    {
+      grades.map((g, i) => (
+        <>
+          <circle class="point" cx={x(i)} cy={y(g.value)} r="4" />
+          <text class="value" x={x(i)} y={y(g.value) - 12} text-anchor="middle">{g.value.toFixed(2)}</text>
+          <text class="tick" x={x(i)} y={H - 8} text-anchor="middle">{g.label}</text>
+        </>
+      ))
+    }
+  </svg>
+  <figcaption>Yearly average out of 20</figcaption>
+</figure>
+
+<style>
+  .trend {
+    max-width: 20rem;
+  }
+
+  svg {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  .grid {
+    stroke: var(--rule);
+    stroke-width: 1;
+  }
+
+  .tick,
+  .value {
+    font-family: var(--mono);
+    font-size: 11px;
+    fill: var(--ink-3);
+  }
+
+  .value {
+    font-size: 12.5px;
+    font-weight: 500;
+    fill: var(--ink);
+  }
+
+  .line {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 1.75;
+    stroke-linecap: round;
+  }
+
+  .point {
+    fill: var(--paper);
+    stroke: var(--accent);
+    stroke-width: 1.75;
+  }
+
+  figcaption {
+    margin-top: 0.25rem;
+    font-size: var(--step--1);
+    color: var(--ink-3);
+  }
+</style>

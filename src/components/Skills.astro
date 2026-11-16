@@ -1,0 +1,145 @@
+---
+import { getCollection } from "astro:content";
+import { profile } from "../lib/profile";
+
+const projects = await getCollection("projects");
+const byId = new Map(projects.map((p) => [p.id, p]));
+
+// Only featured projects have a page to link to.
+const linked = (ids: string[]) =>
+  ids
+    .map((id) => byId.get(id))
+    .filter((p) => p !== undefined && p.data.featured)
+    .map((p) => ({ id: p!.id, title: p!.data.title }));
+---
+
+<p class="hint muted small">Outlined skills show the projects that use them.</p>
+
+<div class="groups" data-skills>
+  {
+    profile.skills.map((group) => (
+      <section class="group">
+        <h3>{group.group}</h3>
+        <ul class="chips">
+          {group.items.map((item) => {
+            const used = linked(item.projects);
+            return (
+              <li>
+                {used.length > 0 ? (
+                  // Without JavaScript the chip is a plain link to the first project.
+                  <a class="chip linked" href={`/work/${used[0].id}`} data-skill={item.name} data-projects={JSON.stringify(used)}>
+                    {item.name}
+                  </a>
+                ) : (
+                  <span class="chip">{item.name}</span>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+        <p class="used small" aria-live="polite" hidden />
+      </section>
+    ))
+  }
+</div>
+
+<style>
+  .hint {
+    margin-bottom: var(--s-3);
+  }
+
+  .groups {
+    display: grid;
+    gap: var(--s-4);
+  }
+
+  h3 {
+    margin-bottom: 0.75rem;
+    font-family: var(--sans);
+    font-size: var(--step-0);
+    font-weight: 600;
+    letter-spacing: 0;
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.25rem;
+    padding: 0.25rem 0.875rem;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--ink-2);
+    font-size: var(--step-0);
+    line-height: 1.3;
+    text-decoration: none;
+  }
+
+  .chip.linked {
+    background: transparent;
+    border-color: var(--rule-strong);
+    color: var(--ink);
+    cursor: pointer;
+    transition: border-color var(--fast) var(--ease), background-color var(--fast) var(--ease);
+  }
+
+  .chip.linked:hover {
+    border-color: var(--ink);
+  }
+
+  .chip.linked[aria-expanded="true"] {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--paper);
+  }
+
+  .used {
+    margin-top: 0.75rem;
+    color: var(--ink-2);
+  }
+</style>
+
+<script>
+  type Used = { id: string; title: string }[];
+
+  for (const group of document.querySelectorAll<HTMLElement>("[data-skills] .group")) {
+    const out = group.querySelector<HTMLElement>(".used");
+    const chips = group.querySelectorAll<HTMLAnchorElement>(".chip.linked");
+    if (!out) continue;
+
+    for (const chip of chips) {
+      chip.setAttribute("role", "button");
+      chip.setAttribute("aria-expanded", "false");
+
+      const toggle = (event: Event) => {
+        event.preventDefault();
+        const open = chip.getAttribute("aria-expanded") === "true";
+        chips.forEach((other) => other.setAttribute("aria-expanded", "false"));
+        out.replaceChildren();
+        out.hidden = open;
+        if (open) return;
+
+        chip.setAttribute("aria-expanded", "true");
+        const used: Used = JSON.parse(chip.dataset.projects ?? "[]");
+        out.append(`${chip.dataset.skill} is used in `);
+        used.forEach((project, i) => {
+          const link = document.createElement("a");
+          link.href = `/work/${project.id}`;
+          link.textContent = project.title;
+          out.append(link, i < used.length - 2 ? ", " : i === used.length - 2 ? " and " : ".");
+        });
+      };
+
+      chip.addEventListener("click", toggle);
+      chip.addEventListener("keydown", (event) => {
+        if (event.key === " ") toggle(event);
+      });
+    }
+  }
+</script>

@@ -1,0 +1,330 @@
+---
+import { getCollection, render } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import Cover from "../../components/Cover.astro";
+import Flow from "../../components/Flow.astro";
+import Icon from "../../components/Icon.astro";
+import Pending from "../../components/Pending.astro";
+import StatusBadge from "../../components/StatusBadge.astro";
+import { profile } from "../../lib/profile";
+
+export async function getStaticPaths() {
+  const projects = (await getCollection("projects"))
+    .filter((p) => p.data.featured)
+    .sort((a, b) => a.data.order - b.data.order);
+  const studies = await getCollection("work");
+
+  return projects.map((project, i) => {
+    const study = studies.find((s) => s.id === project.id);
+    if (!study) throw new Error(`Featured project "${project.id}" has no case study at src/content/work/${project.id}.mdx`);
+    return {
+      params: { slug: project.id },
+      props: { project, study, next: projects[(i + 1) % projects.length] },
+    };
+  });
+}
+
+interface Props {
+  project: CollectionEntry<"projects">;
+  study: CollectionEntry<"work">;
+  next: CollectionEntry<"projects">;
+}
+
+const { project, study, next } = Astro.props;
+const { data } = project;
+const { Content } = await render(study);
+
+const description = data.description ?? data.tagline;
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  name: data.title,
+  headline: data.tagline,
+  description,
+  url: new URL(Astro.url.pathname, Astro.site).href,
+  author: { "@type": "Person", name: profile.name, url: Astro.site?.href },
+};
+---
+
+<Base title={`${data.title}: ${data.tagline} | ${profile.displayName}`} description={description} og={project.id} schema={schema}>
+  <article class="page">
+    <header class="head">
+      <a class="back small" href="/#work">
+        <Icon name="back" size={16} />
+        All work
+      </a>
+      <h1>{data.title}</h1>
+      <p class="tagline">{data.tagline}</p>
+    </header>
+
+    <dl class="summary">
+      <div>
+        <dt>Role</dt>
+        <dd>{data.role}</dd>
+      </div>
+      <div>
+        <dt>Team</dt>
+        <dd>{data.team === 1 ? "Solo" : `${data.team} people`}</dd>
+      </div>
+      <div>
+        <dt>Timeline</dt>
+        <dd>{data.period ?? <Pending inline>Dates to add</Pending>}</dd>
+      </div>
+      <div>
+        <dt>Status</dt>
+        <dd><StatusBadge status={data.status} note={data.statusNote} /></dd>
+      </div>
+      <div class="wide">
+        <dt>Stack</dt>
+        <dd>{data.stack.join(", ")}</dd>
+      </div>
+      <div class="wide">
+        <dt>Links</dt>
+        <dd>
+          {
+            data.links.repo ? (
+              <a href={data.links.repo} rel="noopener">
+                Source on GitHub
+              </a>
+            ) : data.links.demo === "on-request" ? (
+              <>
+                Private repo. <a href={`mailto:${profile.email}?subject=${encodeURIComponent(`${data.title} demo`)}`}>Ask for a demo</a>
+              </>
+            ) : data.status === "repo-coming" ? (
+              "The repo will be public soon."
+            ) : (
+              <Pending inline>links</Pending>
+            )
+          }
+        </dd>
+      </div>
+    </dl>
+
+    <figure class="cover">
+      <div class="frame" style={`view-transition-name: cover-${project.id}`}>
+        <Cover id={project.id} />
+      </div>
+      <figcaption>{study.data.coverCaption}</figcaption>
+    </figure>
+
+    <div class="study">
+      <Content components={{ Flow, Pending }} />
+    </div>
+
+    <nav class="next" aria-label="Next case study">
+      <a href={`/work/${next.id}`}>
+        <span class="small muted">Next case study</span>
+        <span class="next-title">
+          {next.data.title}
+          <Icon name="arrow" size={22} />
+        </span>
+      </a>
+    </nav>
+  </article>
+</Base>
+
+<style>
+  .head {
+    display: grid;
+    gap: var(--s-2);
+    justify-items: start;
+    padding-block: clamp(2rem, 6vw, 4rem) var(--s-4);
+  }
+
+  .back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    min-height: 2.75rem;
+    color: var(--ink-2);
+    text-decoration: none;
+  }
+
+  .back:hover {
+    color: var(--ink);
+  }
+
+  h1 {
+    font-size: var(--step-5);
+    font-weight: 350;
+    line-height: 1.04;
+    letter-spacing: -0.028em;
+  }
+
+  .tagline {
+    max-width: 34rem;
+    font-size: var(--step-2);
+    line-height: 1.45;
+    color: var(--ink-2);
+  }
+
+  /* Summary box */
+  .summary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s-3) var(--s-4);
+    padding-block: var(--s-3);
+    border-block: 1px solid var(--rule);
+  }
+
+  .summary > div {
+    min-width: 0;
+  }
+
+  .summary .wide {
+    grid-column: 1 / -1;
+  }
+
+  dt {
+    font-size: var(--step--1);
+    color: var(--ink-3);
+  }
+
+  dd {
+    font-size: var(--step-0);
+    line-height: 1.45;
+  }
+
+  @media (min-width: 52rem) {
+    .summary {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .summary .wide {
+      grid-column: span 2;
+    }
+  }
+
+  /* Cover */
+  .cover {
+    margin-block: var(--s-5);
+  }
+
+  .cover .frame {
+    overflow: hidden;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-m);
+  }
+
+  .cover :global(svg.cover) {
+    max-height: 30rem;
+  }
+
+  figcaption {
+    margin-top: 0.75rem;
+    font-size: var(--step--1);
+    color: var(--ink-3);
+  }
+
+  /* Body: plain Markdown. Each h2 sits in the margin beside its section. */
+  .study {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--s-2);
+    padding-bottom: var(--s-5);
+  }
+
+  .study > :global(*) {
+    max-width: var(--measure);
+  }
+
+  .study > :global(h2) {
+    max-width: none;
+    margin-top: var(--s-4);
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--rule);
+    font-size: var(--step-3);
+  }
+
+  .study > :global(h2:first-child) {
+    margin-top: 0;
+  }
+
+  .study > :global(figure) {
+    max-width: none;
+  }
+
+  .study :global(ul) {
+    display: grid;
+    gap: 0.5rem;
+    padding-left: 1.25rem;
+    list-style: disc;
+  }
+
+  .study :global(li::marker) {
+    color: var(--ink-3);
+  }
+
+  .study :global(strong) {
+    font-weight: 600;
+  }
+
+  @media (min-width: 60rem) {
+    /* The heading moves into the margin and shares a row with the first
+       block of its section. Its rule is drawn across the full width. */
+    .study {
+      container-type: inline-size;
+      grid-template-columns: var(--rail) minmax(0, 1fr);
+      column-gap: var(--s-4);
+    }
+
+    .study > :global(*) {
+      grid-column: 2;
+    }
+
+    .study > :global(h2) {
+      position: relative;
+      grid-column: 1;
+      border-top: 0;
+      font-size: var(--step-2);
+      line-height: 1.3;
+    }
+
+    .study > :global(h2)::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100cqi;
+      border-top: 1px solid var(--rule);
+    }
+
+    .study > :global(h2 + *) {
+      margin-top: calc(2 * var(--s-4));
+    }
+
+    .study > :global(h2:first-child + *) {
+      margin-top: var(--s-4);
+    }
+  }
+
+  /* Next */
+  .next {
+    border-top: 1px solid var(--rule);
+  }
+
+  .next a {
+    display: grid;
+    gap: 0.25rem;
+    padding-block: var(--s-4) var(--s-5);
+    text-decoration: none;
+  }
+
+  .next-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: var(--serif);
+    font-size: var(--step-4);
+    letter-spacing: -0.02em;
+  }
+
+  .next-title :global(svg) {
+    transition: transform var(--fast) var(--ease);
+  }
+
+  .next a:hover .next-title :global(svg) {
+    transform: translateX(4px);
+  }
+</style>

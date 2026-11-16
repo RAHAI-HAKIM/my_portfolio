@@ -1,0 +1,115 @@
+---
+import type { CollectionEntry } from "astro:content";
+import Cover from "./Cover.astro";
+import StatusBadge from "./StatusBadge.astro";
+
+interface Props {
+  project: CollectionEntry<"projects">;
+  /** The lead card sets its cover beside the text on wide screens. */
+  lead?: boolean;
+}
+const { project, lead = false } = Astro.props;
+const { id, data } = project;
+const team = data.team === 1 ? null : `Team of ${data.team}`;
+---
+
+<article class:list={["card", { lead }]}>
+  <a class="frame" href={`/work/${id}`} tabindex="-1" aria-hidden="true" style={`view-transition-name: cover-${id}`}>
+    <Cover id={id} />
+  </a>
+  <div class="text">
+    <StatusBadge status={data.status} note={data.statusNote} />
+    <h3><a class="title" href={`/work/${id}`}>{data.title}</a></h3>
+    <p class="result">{data.result}</p>
+    <p class="role">{team ? `${team}. ${data.role}.` : `${data.role}.`}</p>
+    <ul class="tags" aria-label="Built with">
+      {data.tags.map((tag) => <li>{tag}</li>)}
+    </ul>
+  </div>
+</article>
+
+<style>
+  .card {
+    position: relative;
+    display: grid;
+    gap: var(--s-3);
+    align-content: start;
+  }
+
+  .frame {
+    display: block;
+    overflow: hidden;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-m);
+    transition: border-color var(--fast) var(--ease);
+  }
+
+  .text {
+    display: grid;
+    gap: 0.625rem;
+    justify-items: start;
+  }
+
+  h3 {
+    font-size: var(--step-4);
+    letter-spacing: -0.02em;
+  }
+
+  /* The whole card is one link: the title link stretches over it. */
+  .title {
+    text-decoration: none;
+  }
+
+  .title::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+  }
+
+  .card:hover .frame,
+  .card:focus-within .frame {
+    border-color: var(--ink);
+  }
+
+  .card:hover .title {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-decoration-color: var(--accent);
+  }
+
+  .title:focus-visible {
+    outline: none;
+  }
+
+  .card:has(.title:focus-visible) .frame {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  .result {
+    max-width: 34rem;
+  }
+
+  .role {
+    font-size: var(--step-0);
+    color: var(--ink-2);
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+    margin-top: 0.25rem;
+    font-family: var(--mono);
+    font-size: var(--step--1);
+    color: var(--ink-3);
+  }
+
+  @media (min-width: 52rem) {
+    .lead {
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+      gap: var(--s-4);
+      align-items: center;
+    }
+  }
+</style>

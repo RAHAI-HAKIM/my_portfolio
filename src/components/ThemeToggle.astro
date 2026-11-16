@@ -1,0 +1,67 @@
+---
+import Icon from "./Icon.astro";
+---
+
+<button class="icon-link theme-toggle" type="button" aria-label="Switch to dark theme" data-theme-toggle>
+  <span class="when-light"><Icon name="moon" /></span>
+  <span class="when-dark"><Icon name="sun" /></span>
+</button>
+
+<style>
+  .theme-toggle {
+    border: 0;
+    background: none;
+    cursor: pointer;
+  }
+
+  .when-dark {
+    display: none;
+  }
+
+  :global([data-theme="dark"]) .when-dark {
+    display: block;
+  }
+
+  :global([data-theme="dark"]) .when-light {
+    display: none;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme="light"])) .when-dark {
+      display: block;
+    }
+
+    :global(:root:not([data-theme="light"])) .when-light {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const root = document.documentElement;
+  const button = document.querySelector<HTMLButtonElement>("[data-theme-toggle]");
+  const system = window.matchMedia("(prefers-color-scheme: dark)");
+
+  const current = () => root.dataset.theme ?? (system.matches ? "dark" : "light");
+  const label = () =>
+    button?.setAttribute("aria-label", `Switch to ${current() === "dark" ? "light" : "dark"} theme`);
+
+  label();
+  system.addEventListener("change", label);
+
+  button?.addEventListener("click", () => {
+    const next = current() === "dark" ? "light" : "dark";
+    root.classList.add("theme-switching");
+    // Choosing the theme the system already uses clears the override,
+    // so the site goes back to following the system setting.
+    if (next === (system.matches ? "dark" : "light")) {
+      delete root.dataset.theme;
+      localStorage.removeItem("theme");
+    } else {
+      root.dataset.theme = next;
+      localStorage.setItem("theme", next);
+    }
+    label();
+    window.setTimeout(() => root.classList.remove("theme-switching"), 220);
+  });
+</script>

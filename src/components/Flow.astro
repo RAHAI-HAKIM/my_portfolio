@@ -1,0 +1,113 @@
+---
+// A pipeline diagram: numbered steps in order, joined by a line.
+// Used from case studies: <Flow steps={[{ title, text }]} caption="..." />
+interface Props {
+  steps: { title: string; text?: string }[];
+  caption?: string;
+}
+const { steps, caption } = Astro.props;
+---
+
+<figure class="flow">
+  <ol style={`--count: ${steps.length}`}>
+    {
+      steps.map((step, i) => (
+        <li>
+          <span class="n num" aria-hidden="true">{i + 1}</span>
+          <strong>{step.title}</strong>
+          {step.text && <span class="text">{step.text}</span>}
+        </li>
+      ))
+    }
+  </ol>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<style>
+  .flow {
+    margin-block: var(--s-3);
+  }
+
+  ol {
+    display: grid;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    position: relative;
+    display: grid;
+    align-content: start;
+    gap: 0.125rem;
+    padding: 0 0 var(--s-3) 2.75rem;
+    font-size: var(--step-0);
+    line-height: 1.45;
+  }
+
+  li:last-child {
+    padding-bottom: 0;
+  }
+
+  /* connector */
+  li:not(:last-child)::before {
+    content: "";
+    position: absolute;
+    left: 0.875rem;
+    top: 1.75rem;
+    bottom: 0;
+    width: 1px;
+    background: var(--rule-strong);
+  }
+
+  .n {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: grid;
+    place-items: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border: 1px solid var(--accent);
+    border-radius: 50%;
+    color: var(--accent);
+    font-size: var(--step--1);
+    background: var(--paper);
+  }
+
+  strong {
+    font-weight: 600;
+    padding-top: 0.15rem;
+  }
+
+  .text {
+    color: var(--ink-2);
+  }
+
+  figcaption {
+    margin-top: var(--s-2);
+    font-size: var(--step--1);
+    color: var(--ink-3);
+  }
+
+  @media (min-width: 46rem) {
+    ol {
+      grid-template-columns: repeat(var(--count), minmax(0, 1fr));
+      gap: var(--s-2);
+    }
+
+    li {
+      padding: 2.5rem 0 0;
+    }
+
+    li:not(:last-child)::before {
+      left: 2.25rem;
+      right: -0.5rem;
+      top: 0.875rem;
+      bottom: auto;
+      width: auto;
+      height: 1px;
+    }
+  }
+</style>

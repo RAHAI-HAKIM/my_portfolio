@@ -3,7 +3,7 @@
 # A value of null means "not written yet": the site shows a visible
 # placeholder for it while showPlaceholders is true, and hides it otherwise.
 
-showPlaceholders: true
+showPlaceholders: false
 
 name: RAHAI Mohamed Abdelhakim
 displayName: Hakim Rahai

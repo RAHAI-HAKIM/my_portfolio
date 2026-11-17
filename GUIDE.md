@@ -4,7 +4,7 @@ What is still open, how to change anything later, and how to put the site online
 
 ## 1. What is still open
 
-Everything here shows on the site as a dashed "To add" note until you fill it. To find them all, search the project for `<Pending` and for `null` in `src/data/`.
+These are hidden on the site for now (`showPlaceholders: false` in `profile.yaml`), so visitors only see confirmed content. Set it to `true` while you work locally to see each gap as a dashed "To add" note. To find them in the files, search for `<Pending` and for `null` in `src/data/`.
 
 ### Needs you
 
@@ -107,33 +107,105 @@ All colours, type sizes and spacing are variables at the top of `src/styles/glob
 
 | Piece | Choice | Cost |
 | --- | --- | --- |
-| Domain | `hakimrahai.dev`, from Name.com through the GitHub Student Developer Pack | Free the first year, then about $12 to $21 a year |
-| Hosting | Cloudflare (Workers, static assets) | Free |
+| Domain | `hakimrahai.dev`, registered at Name.com through the GitHub Student Developer Pack (Namecheap does not sell `.dev`) | Free until 17 Nov 2027, then $22.99 a year at Name.com, or about $12 at Cloudflare (see "Renewal") |
+| DNS | Cloudflare | Free |
+| Hosting | Cloudflare Workers, static assets | Free |
 | Analytics | Cloudflare Web Analytics | Free, no cookies |
 
-`hakimrahai.dev` matches the wordmark and your LinkedIn handle, and it was unregistered when I checked on 17 Nov 2026. `rahai.dev` was also free if you prefer the shorter one. The site is already configured for `hakimrahai.dev`; if you register a different name, change the fallback in `astro.config.mjs`.
+Name.com only holds the registration. Cloudflare answers for the domain (DNS), serves the site and issues the HTTPS certificate that `.dev` requires. The project already contains the config Cloudflare needs (`wrangler.jsonc`), and the site is built for `https://hakimrahai.dev` (set in `astro.config.mjs`).
 
-Cloudflare over GitHub Pages because it deploys on every push without a workflow file, gives each branch a preview address, serves the custom 404 page, and has the analytics built in. The project already contains the config it needs (`wrangler.jsonc`).
+Cloudflare over GitHub Pages because it deploys on every push without a workflow file, gives each branch a preview address, serves the custom 404 page, and has the analytics built in.
 
-### One-time setup
+### Where things stand
 
-1. **Push the code to GitHub.** The remote is already `RAHAI-HAKIM/my_portfolio`. Merge `site-v1` into `main` and push.
-2. **Register the domain.** In the GitHub Student Developer Pack, open the Name.com offer and register `hakimrahai.dev`.
-3. **Create the Cloudflare project.** In the Cloudflare dashboard, go to Workers & Pages, create an application, and import the GitHub repository. Use these settings:
+| Step | State |
+| --- | --- |
+| Code on GitHub (`main`) | Done |
+| Domain registered at Name.com | Done. Auto-renew and WHOIS privacy are on |
+| Domain added to Cloudflare | Done. Waiting for the nameservers |
+| Nameservers at Name.com | To fix: the list has four entries, it must have only Cloudflare's two (step 1 below) |
+| DNSSEC | Off, which is what Cloudflare needs. Nothing to do |
+| Cloudflare Worker for the site | To do (step 2) |
+| Domain connected to the Worker | To do (step 3) |
+| Analytics | To do (step 4) |
+
+### 1. Fix the nameservers at Name.com
+
+Cloudflare only activates a domain when its own nameservers are the **only** ones listed. When this was checked on 17 Nov 2026, the registry listed four:
+
+```
+elliott.ns.cloudflare.com   keep
+jo.ns.cloudflare.com        keep
+ns3cgw.name.com             remove
+ns4qxz.name.com             remove
+```
+
+1. In Name.com, open My Domains, then `hakimrahai.dev`, then Manage Nameservers.
+2. Click the minus button next to each `name.com` row (Name.com shows them as `ns3.name.com` and `ns4.name.com`) until only these two rows are left:
+   - `jo.ns.cloudflare.com`
+   - `elliott.ns.cloudflare.com`
+3. Click **Save**. The button stays greyed out until the list changes, so remove the rows first. Name.com applies the whole list at once.
+4. Do not click "Use default nameservers": that puts Name.com's four back.
+
+After saving, Name.com will warn that DNS records managed there are no longer active. That is expected: from now on all DNS records are managed in Cloudflare.
+
+**Check that it worked.** Paste this address into a browser:
+
+```
+https://pubapi.registry.google/rdap/domain/hakimrahai.dev
+```
+
+Under `nameservers` it should list exactly `elliott.ns.cloudflare.com` and `jo.ns.cloudflare.com`. The registry updates within minutes. Cloudflare then usually marks the domain **Active** within 1 to 2 hours (up to 24) and emails you. To make it check sooner, open the domain's Overview page in Cloudflare and click "Check nameservers now".
+
+Cloudflare's two other suggestions on that page do not apply here: DNSSEC is already off, and "only allow Cloudflare IP addresses at your origin" is for sites with their own server, which this one does not have.
+
+### 2. Create the Worker that builds the site
+
+This can be done while you wait for step 1.
+
+1. In the Cloudflare dashboard, open Workers & Pages, then Create application.
+2. Choose to import a repository, connect your GitHub account, and select `RAHAI-HAKIM/my_portfolio`.
+3. Use these settings:
+   - Project name: `portfolio` (it must match `name` in `wrangler.jsonc`)
+   - Production branch: `main`
    - Build command: `npm run build`
    - Deploy command: `npx wrangler deploy`
    - Environment variable: `NODE_VERSION` = `24`
-4. **Check the preview address.** Cloudflare gives the site a `*.workers.dev` address. Open it and click through the pages.
-5. **Connect the domain.** Add `hakimrahai.dev` to Cloudflare as a site, then set the two nameservers it shows you in Name.com's domain settings. When Cloudflare reports the domain as active, open the Worker's settings, Domains & Routes, and add `hakimrahai.dev` as a custom domain. HTTPS is issued automatically, which `.dev` requires.
-6. **Turn on analytics.** In Cloudflare, open Web Analytics, add the site, copy the token, and paste it into `analyticsToken` in `profile.yaml`.
+4. Save and deploy. The first build takes a minute or two.
+5. Open the `*.workers.dev` address Cloudflare gives you and click through every page.
 
-Cloudflare's dashboard labels move around, so if a step does not match what you see, follow their Astro guide: https://developers.cloudflare.com/workers/framework-guides/web-apps/astro/
+If the build fails, open the build log in Cloudflare. The most likely cause is the Node version: check that `NODE_VERSION` is set.
+
+### 3. Connect the domain to the Worker
+
+Only once step 1 shows the domain as **Active** in Cloudflare:
+
+1. Open the `portfolio` Worker, then Settings, then Domains & Routes.
+2. Add a Custom domain: `hakimrahai.dev`.
+3. Add a second one: `www.hakimrahai.dev`, so the `www` address works too.
+
+Cloudflare creates the DNS records and the HTTPS certificate by itself. Allow a few minutes, then open https://hakimrahai.dev.
+
+### 4. Turn on analytics
+
+1. In Cloudflare, open Analytics & Logs, then Web Analytics, and add `hakimrahai.dev`.
+2. Copy the token from the snippet it shows (the value after `"token":`).
+3. Paste it into `analyticsToken` in `src/data/profile.yaml`, then commit and push.
+
+Cloudflare's dashboard labels move around. If a step does not match what you see, follow their Astro guide: https://developers.cloudflare.com/workers/framework-guides/web-apps/astro/
 
 ### After setup
 
 Every push to `main` builds and deploys the site in about a minute. A push to any other branch gets its own preview address, so you can check a change before it goes live.
 
-When the renewal comes up after the first year, transfer the domain to Cloudflare Registrar, which sells `.dev` at cost.
+### Renewal
+
+The free year ends on 17 Nov 2027, when Name.com renews at $22.99. Cloudflare Registrar sells `.dev` at cost, about $12 a year. To switch, transfer the domain to Cloudflare Registrar at least a few weeks before 17 Nov 2027:
+
+1. In Name.com, turn off Transfer Lock and get the authorization code.
+2. In Cloudflare, open Domain Registration, then Transfer Domains, and follow the steps. The transfer adds a year to the registration.
+
+New registrations cannot be transferred for their first 60 days, so do this after mid-January 2027. If you would rather keep things simple, leave auto-renew on at Name.com.
 
 ### If you would rather use GitHub Pages
 

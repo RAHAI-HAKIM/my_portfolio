@@ -122,11 +122,11 @@ Cloudflare over GitHub Pages because it deploys on every push without a workflow
 | --- | --- |
 | Code on GitHub (`main`) | Done |
 | Domain registered at Name.com | Done. Auto-renew and WHOIS privacy are on |
-| Domain added to Cloudflare | Done. Waiting for the nameservers |
+| Domain added to Cloudflare | Done. Active |
 | Nameservers at Name.com | To fix: the list has four entries, it must have only Cloudflare's two (step 1 below) |
 | DNSSEC | Off, which is what Cloudflare needs. Nothing to do |
-| Cloudflare Worker for the site | To do (step 2) |
-| Domain connected to the Worker | To do (step 3) |
+| Cloudflare Worker for the site | To do, if not created yet (step 2) |
+| Domain connected to the Worker | To do: delete the imported Name.com records first (step 3) |
 | Analytics | To do (step 4) |
 
 ### 1. Fix the nameservers at Name.com
@@ -178,13 +178,23 @@ If the build fails, open the build log in Cloudflare. The most likely cause is t
 
 ### 3. Connect the domain to the Worker
 
-Only once step 1 shows the domain as **Active** in Cloudflare:
+Only once step 1 shows the domain as **Active** in Cloudflare.
 
-1. Open the `portfolio` Worker, then Settings, then Domains & Routes.
+**First, delete the records Cloudflare copied from Name.com.** When you add a domain, Cloudflare imports the DNS records it finds at the old provider. For a new Name.com domain these point at Name.com's parking page, which has no valid HTTPS certificate. With them in place, visitors get error 522 or 525 ("SSL handshake failed"), and Cloudflare refuses to attach the Worker to those names.
+
+1. In Cloudflare, open `hakimrahai.dev`, then DNS, then Records.
+2. Delete every `A`, `AAAA` and `CNAME` record whose name is `hakimrahai.dev` (shown as `@` or the bare domain) or `www`.
+3. Leave `MX` and `TXT` records alone if there are any. The site does not use them, but they may carry email settings.
+
+**Then attach the Worker:**
+
+1. Open Workers & Pages, then the `portfolio` Worker, then Settings, then Domains & Routes.
 2. Add a Custom domain: `hakimrahai.dev`.
 3. Add a second one: `www.hakimrahai.dev`, so the `www` address works too.
 
-Cloudflare creates the DNS records and the HTTPS certificate by itself. Allow a few minutes, then open https://hakimrahai.dev.
+Cloudflare creates the new DNS records and the HTTPS certificate by itself. Allow a few minutes, then open https://hakimrahai.dev. The DNS page will now show the two names as type `Worker`.
+
+If the custom domain cannot be added and Cloudflare says a record already exists, a record from the first part is still there: delete it and try again.
 
 ### 4. Turn on analytics
 

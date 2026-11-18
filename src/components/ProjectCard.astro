@@ -14,12 +14,12 @@ const team = data.team === 1 ? null : `Team of ${data.team}`;
 ---
 
 <article class:list={["card", { lead }]}>
-  <a class="frame" href={`/work/${id}`} tabindex="-1" aria-hidden="true" style={`view-transition-name: cover-${id}`}>
+  <a class="frame" href={`/work/${id}/`} tabindex="-1" aria-hidden="true" style={`view-transition-name: cover-${id}`}>
     <Cover id={id} />
   </a>
   <div class="text">
     <StatusBadge status={data.status} note={data.statusNote} />
-    <h3><a class="title" href={`/work/${id}`}>{data.title}</a></h3>
+    <h3><a class="title" href={`/work/${id}/`}>{data.title}</a></h3>
     <p class="result">{data.result}</p>
     <p class="role">{team ? `${team}. ${data.role}.` : `${data.role}.`}</p>
     <ul class="tags" aria-label="Built with">

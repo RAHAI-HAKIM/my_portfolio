@@ -27,7 +27,7 @@ const linked = (ids: string[]) =>
               <li>
                 {used.length > 0 ? (
                   // Without JavaScript the chip is a plain link to the first project.
-                  <a class="chip linked" href={`/work/${used[0].id}`} data-skill={item.name} data-projects={JSON.stringify(used)}>
+                  <a class="chip linked" href={`/work/${used[0].id}/`} data-skill={item.name} data-projects={JSON.stringify(used)}>
                     {item.name}
                   </a>
                 ) : (
@@ -130,7 +130,7 @@ const linked = (ids: string[]) =>
         out.append(`${chip.dataset.skill} is used in `);
         used.forEach((project, i) => {
           const link = document.createElement("a");
-          link.href = `/work/${project.id}`;
+          link.href = `/work/${project.id}/`;
           link.textContent = project.title;
           out.append(link, i < used.length - 2 ? ", " : i === used.length - 2 ? " and " : ".");
         });

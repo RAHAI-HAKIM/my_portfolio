@@ -126,7 +126,7 @@ Cloudflare over GitHub Pages because it deploys on every push without a workflow
 | Nameservers at Name.com | Done: only Cloudflare's two |
 | DNSSEC | Off, which is what Cloudflare needs. Nothing to do |
 | Cloudflare Worker for the site | Done: `my-portfolio`, live at its `workers.dev` address |
-| Domain connected to the Worker | To do: add it as a custom domain, not a route (step 3) |
+| Domain connected to the Worker | Done: `hakimrahai.dev` and `www.hakimrahai.dev` are custom domains |
 | Analytics | To do (step 4) |
 
 ### 1. Fix the nameservers at Name.com
@@ -194,7 +194,9 @@ Only once step 1 shows the domain as **Active** in Cloudflare.
 
 Use **Custom domains**, not **Routes**. A route only tells Cloudflare which Worker should answer for a name that already has a DNS record; it does not create the record. With the Name.com records deleted and only a route set, the domain has no address at all and the browser cannot reach it. A custom domain creates the DNS record and the certificate for you. If a route such as `*.hakimrahai.dev` was added, delete it.
 
-Cloudflare creates the new DNS records and the HTTPS certificate by itself. Allow a few minutes, then open https://hakimrahai.dev. The DNS page will now show the two names as type `Worker`.
+Cloudflare creates the new DNS records and the HTTPS certificate by itself. Allow a few minutes, then open https://hakimrahai.dev.
+
+If the site works on your phone (on mobile data) but not on your computer, your computer is still remembering the moment the domain had no address. Open a terminal as administrator and run `ipconfig /flushdns`, then in Chrome open `chrome://net-internals/#dns` and click "Clear host cache". Otherwise it clears by itself within about an hour. The DNS page will now show the two names as type `Worker`.
 
 If the custom domain cannot be added and Cloudflare says a record already exists, a record from the first part is still there: delete it and try again.
 

@@ -1,7 +1,7 @@
 // Cloudflare Workers config: serves the built static site in ./dist.
 // See GUIDE.md, "Hosting".
 {
-  "name": "portfolio",
+  "name": "my-portfolio",
   "compatibility_date": "2026-11-01",
   "assets": {
     "directory": "./dist",

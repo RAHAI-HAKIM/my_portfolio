@@ -123,10 +123,10 @@ Cloudflare over GitHub Pages because it deploys on every push without a workflow
 | Code on GitHub (`main`) | Done |
 | Domain registered at Name.com | Done. Auto-renew and WHOIS privacy are on |
 | Domain added to Cloudflare | Done. Active |
-| Nameservers at Name.com | To fix: the list has four entries, it must have only Cloudflare's two (step 1 below) |
+| Nameservers at Name.com | Done: only Cloudflare's two |
 | DNSSEC | Off, which is what Cloudflare needs. Nothing to do |
-| Cloudflare Worker for the site | To do, if not created yet (step 2) |
-| Domain connected to the Worker | To do: delete the imported Name.com records first (step 3) |
+| Cloudflare Worker for the site | Done: `my-portfolio`, live at its `workers.dev` address |
+| Domain connected to the Worker | To do: add it as a custom domain, not a route (step 3) |
 | Analytics | To do (step 4) |
 
 ### 1. Fix the nameservers at Name.com
@@ -166,7 +166,7 @@ This can be done while you wait for step 1.
 1. In the Cloudflare dashboard, open Workers & Pages, then Create application.
 2. Choose to import a repository, connect your GitHub account, and select `RAHAI-HAKIM/my_portfolio`.
 3. Use these settings:
-   - Project name: `portfolio` (it must match `name` in `wrangler.jsonc`)
+   - Project name: `my-portfolio` (it must match `name` in `wrangler.jsonc`)
    - Production branch: `main`
    - Build command: `npm run build`
    - Deploy command: `npx wrangler deploy`
@@ -188,9 +188,11 @@ Only once step 1 shows the domain as **Active** in Cloudflare.
 
 **Then attach the Worker:**
 
-1. Open Workers & Pages, then the `portfolio` Worker, then Settings, then Domains & Routes.
-2. Add a Custom domain: `hakimrahai.dev`.
-3. Add a second one: `www.hakimrahai.dev`, so the `www` address works too.
+1. Open Workers & Pages, then the `my-portfolio` Worker, then its **Domains** tab (also shown on the Overview page as the Domains box).
+2. Under **Custom domains**, click Add and enter `hakimrahai.dev`.
+3. Add a second custom domain: `www.hakimrahai.dev`, so the `www` address works too.
+
+Use **Custom domains**, not **Routes**. A route only tells Cloudflare which Worker should answer for a name that already has a DNS record; it does not create the record. With the Name.com records deleted and only a route set, the domain has no address at all and the browser cannot reach it. A custom domain creates the DNS record and the certificate for you. If a route such as `*.hakimrahai.dev` was added, delete it.
 
 Cloudflare creates the new DNS records and the HTTPS certificate by itself. Allow a few minutes, then open https://hakimrahai.dev. The DNS page will now show the two names as type `Worker`.
 

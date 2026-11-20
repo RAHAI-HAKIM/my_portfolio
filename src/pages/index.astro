@@ -17,7 +17,7 @@ const more = projects.filter((p) => !p.data.featured);
 // The family name is written in capitals in the data ("RAHAI"); running text reads better as "Rahai".
 const fullName = profile.name.replace(/\b([A-Z])([A-Z]+)\b/g, (_, a: string, b: string) => a + b.toLowerCase());
 
-const description = `${profile.displayName} is an AI engineering student at ENSIA who builds optimization and decision-support systems for real businesses. Case studies, CV and contact.`;
+const description = `I am an AI engineering student at ENSIA who builds optimization and decision-support systems for real businesses. Case studies, CV and contact.`;
 
 const schema = {
   "@context": "https://schema.org",
@@ -41,7 +41,7 @@ const schema = {
       <div class="hero-text">
         <h1 id="positioning" class="rise">{profile.positioning.replaceAll("-", "‑")}</h1>
         <p class="who rise" style="--i: 1">
-          {fullName} is an {profile.title} at ENSIA, working in {profile.focus.toLowerCase()}. Based in {profile.location}.
+          I am an {profile.title} at ENSIA, working in {profile.focus.toLowerCase()}. Based in {profile.location}.
         </p>
         {
           profile.about ? (
